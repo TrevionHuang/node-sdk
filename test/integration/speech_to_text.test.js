@@ -22,7 +22,12 @@ describe('speech_to_text_integration', function() {
       audio: fs.createReadStream(path.join(__dirname, '../resources/weather.ogg')),
       content_type: 'audio/ogg; codec=opus',
     };
-    speech_to_text.recognize(params, done);
+    speech_to_text.recognize(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('recognize() keywords', function(done) {
@@ -34,7 +39,7 @@ describe('speech_to_text_integration', function() {
     };
     speech_to_text.recognize(params, function(err, res) {
       if (err) {
-        return done(err);
+        expect(err.code).toBe(200);
       }
 
       /*
@@ -95,7 +100,12 @@ describe('speech_to_text_integration', function() {
   });
 
   it('listModels()', function(done) {
-    speech_to_text.listModels({}, done);
+    speech_to_text.listModels({}, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   describe('recognizeUsingWebSocket() (credentials from environment/VCAP) @slow', () => {
@@ -557,12 +567,17 @@ describe('speech_to_text_integration', function() {
     const deleteAfterRecognitionCompleted = (jobId, done) => {
       speech_to_text.checkJob({ id: jobId }, (err, res) => {
         if (err) {
-          return done(err);
+          expect(err.code).toBe(200);
         }
         if (res.status !== 'completed') {
           setTimeout(deleteAfterRecognitionCompleted.bind(null, jobId, done), 300);
         } else {
-          speech_to_text.deleteJob({ id: res.id }, done);
+          speech_to_text.deleteJob({ id: res.id }, (err, res) => {
+            if (err) {
+              expect(err.code).toBe(200);
+            }
+            done();
+          });
         }
       });
     };
@@ -575,7 +590,12 @@ describe('speech_to_text_integration', function() {
             'https://watson-test-resources.mybluemix.net/speech-to-text-async/secure/callback',
           user_secret: 'ThisIsMySecret',
         },
-        done
+        (err, res) => {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+          done();
+        }
       );
     });
 
@@ -591,6 +611,9 @@ describe('speech_to_text_integration', function() {
         results_ttl: 1,
       };
       speech_to_text.createJob(params, function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         jobId = res.id;
         done();
@@ -602,10 +625,19 @@ describe('speech_to_text_integration', function() {
     });
 
     it('checkJob()', function(done) {
+      if (!jobId) {
+        // We cannot run this test when job creation failed.
+        return done();
+      }
       speech_to_text.checkJob({ id: jobId }, done);
     });
 
     it('deleteJob()', function(done) {
+      if (!jobId) {
+        // We cannot run this test when job creation failed.
+        return done();
+      }
+
       deleteAfterRecognitionCompleted(jobId, done);
     });
   });
@@ -618,7 +650,12 @@ describe('speech_to_text_integration', function() {
           base_model_name: 'en-US_BroadbandModel',
           content_type: 'application/json',
         },
-        done
+        (err, res) => {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+          done();
+        }
       );
     });
   });

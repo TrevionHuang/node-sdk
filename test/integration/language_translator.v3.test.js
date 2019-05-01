@@ -14,7 +14,12 @@ describe('language_translator_integration', function() {
   const language_translator = new LanguageTranslatorV3(auth.language_translator);
 
   it('listModels()', function(done) {
-    language_translator.listModels(null, done);
+    language_translator.listModels(null, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('translate()', function(done) {
@@ -23,17 +28,32 @@ describe('language_translator_integration', function() {
       source: 'en',
       target: 'es',
     };
-    language_translator.translate(params, done);
+    language_translator.translate(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('listIdentifiableLanguages()', function(done) {
-    language_translator.listIdentifiableLanguages(null, done);
+    language_translator.listIdentifiableLanguages(null, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('identify()', function(done) {
     const params = {
       text: 'this is an important test that needs to work',
     };
-    language_translator.identify(params, done);
+    language_translator.identify(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 });

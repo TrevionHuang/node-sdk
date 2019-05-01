@@ -20,7 +20,12 @@ describe('personality_insights_v3_integration', function() {
       content: mobydick,
       content_type: 'text/plain',
     };
-    personality_insights.profile(params, done);
+    personality_insights.profile(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('profile with text content and all params', function(done) {
@@ -32,7 +37,12 @@ describe('personality_insights_v3_integration', function() {
       raw_scores: true,
       consumption_preferences: true,
     };
-    personality_insights.profile(params, done);
+    personality_insights.profile(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('profile with html content', function(done) {
@@ -40,7 +50,12 @@ describe('personality_insights_v3_integration', function() {
       content: '<div>' + mobydick + '</div>',
       content_type: 'text/html',
     };
-    personality_insights.profile(params, done);
+    personality_insights.profile(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   it('profile with csv response', function(done) {
@@ -54,6 +69,11 @@ describe('personality_insights_v3_integration', function() {
         accept: 'text/csv',
       },
     };
-    personality_insights.profileAsCsv(params, done);
+    personality_insights.profileAsCsv(params, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 });

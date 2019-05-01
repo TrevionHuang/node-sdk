@@ -65,6 +65,7 @@ describe('visual_recognition_integration', function() {
       };
       visual_recognition.classify(params, function(err, result) {
         if (err) {
+          expect(err.code).toBe(200);
           return done(err);
         }
         // console.log(JSON.stringify(result, null, 2));
@@ -94,6 +95,7 @@ describe('visual_recognition_integration', function() {
       };
       visual_recognition.detectFaces(params, function(err, result) {
         if (err) {
+          expect(err.code).toBe(200);
           return done(err);
         }
         expect(result.images_processed).toBe(1);
@@ -111,6 +113,7 @@ describe('visual_recognition_integration', function() {
       };
       visual_recognition.detectFaces(params, function(err, result) {
         if (err) {
+          expect(err.code).toBe(200);
           return done(err);
         }
         // console.log(JSON.stringify(result, null, 2));

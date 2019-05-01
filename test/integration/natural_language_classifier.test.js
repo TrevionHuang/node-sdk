@@ -19,7 +19,7 @@ describe('natural_language_classifier_integration', function() {
     };
     natural_language_classifier.getClassifier(params, function(err, result) {
       if (err) {
-        return done(err);
+        expect(err.code).toBe(200);
       }
       expect(result.classifier_id).toBe(params.classifier_id);
       done();
@@ -33,7 +33,7 @@ describe('natural_language_classifier_integration', function() {
     };
     natural_language_classifier.classifyCollection(params, function(err, result) {
       if (err) {
-        return done(err);
+        expect(err.code).toBe(200);
       }
       expect(result.classifier_id).toBe(params.classifier_id);
       done();

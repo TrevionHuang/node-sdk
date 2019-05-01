@@ -13,7 +13,12 @@ describe('text_to_speech_integration', function() {
   const text_to_speech = new TextToSpeechV1(auth.text_to_speech);
 
   it('listVoices()', function(done) {
-    text_to_speech.listVoices(null, done);
+    text_to_speech.listVoices(null, (err, res) => {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+      done();
+    });
   });
 
   describe('synthesize', function() {
@@ -27,6 +32,10 @@ describe('text_to_speech_integration', function() {
       // wav.Reader parses the wav header and will throw if it isn't valid
       const reader = new wav.Reader();
       text_to_speech.synthesize(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         res.pipe(reader).on('format', done.bind(null, null));
       });
@@ -53,6 +62,10 @@ describe('text_to_speech_integration', function() {
 
   it('getPronunciation()', function(done) {
     const checkPronunciation = function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+
       expect(err).toBeNull();
       expect(JSON.stringify(res)).toBe(
         JSON.stringify({
@@ -83,7 +96,7 @@ describe('text_to_speech_integration', function() {
         function(err, response) {
           // console.log(JSON.stringify(err || response, null, 2));
           if (err) {
-            return done(err);
+            expect(err.code).toBe(200);
           }
           expect(response.customization_id).toBeDefined();
           customization_id = response.customization_id;
@@ -106,7 +119,7 @@ describe('text_to_speech_integration', function() {
           done();
         })
         .catch(err => {
-          done(err);
+          expect(err.code).toBe(200);
         });
     });
 
@@ -114,7 +127,7 @@ describe('text_to_speech_integration', function() {
       text_to_speech.listVoiceModels({ language: 'en-GB' }, function(err, response) {
         // console.log(JSON.stringify(err || response, null, 2));
         if (err) {
-          return done(err);
+          expect(err.code).toBe(200);
         }
         expect(Array.isArray(response.customizations)).toBe(true);
         const hasOtherLanguages = response.customizations.some(function(c) {
@@ -126,6 +139,11 @@ describe('text_to_speech_integration', function() {
     });
 
     it('updateVoiceModel()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.updateVoiceModel(
         {
           customization_id: customization_id,
@@ -137,10 +155,15 @@ describe('text_to_speech_integration', function() {
     });
 
     it('getVoiceModel()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.getVoiceModel({ customization_id: customization_id }, function(err, res) {
         // console.log(JSON.stringify(err || res, null, 2));
         if (err) {
-          return done(err);
+          expect(err.code).toBe(200);
         }
         expect(res.customization_id).toBe(customization_id);
         expect(res.words.length).toBeTruthy();
@@ -149,30 +172,55 @@ describe('text_to_speech_integration', function() {
     });
 
     it('addWords()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.addWords(
         {
           customization_id: customization_id,
           words: [{ word: 'iPhone', translation: 'I phone' }],
         },
-        done
+        (err, res) => {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+          done();
+        }
       );
     });
 
     it('addWord()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.addWord(
         {
           customization_id: customization_id,
           word: 'IEEE',
           translation: 'I tipple E',
         },
-        done
+        (err, res) => {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+          done();
+        }
       );
     });
 
     it('listWords()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.listWords({ customization_id: customization_id }, function(err, response) {
         if (err) {
-          return done(err);
+          expect(err.code).toBe(200);
         }
         expect(response).toBeDefined();
         expect(response.words).toBeDefined();
@@ -182,12 +230,17 @@ describe('text_to_speech_integration', function() {
     });
 
     it('getWord()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.getWord({ customization_id: customization_id, word: 'NCAA' }, function(
         err,
         response
       ) {
         if (err) {
-          return done(err);
+          expect(err.code).toBe(200);
         }
         expect(response.translation).toBe('N C double A');
         done();
@@ -195,17 +248,37 @@ describe('text_to_speech_integration', function() {
     });
 
     it('deleteWord()', function(done) {
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
       text_to_speech.deleteWord(
         {
           customization_id: customization_id,
           word: 'NCAA',
         },
-        done
+        (err, res) => {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+          done();
+        }
       );
     });
 
     it('deleteVoiceModel()', function(done) {
-      text_to_speech.deleteVoiceModel({ customization_id: customization_id }, done);
+      if (!customization_id) {
+        // We cannot run this test when voice model creation failed.
+        return done();
+      }
+
+      text_to_speech.deleteVoiceModel({ customization_id: customization_id }, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+        done();
+      });
     });
   });
 });

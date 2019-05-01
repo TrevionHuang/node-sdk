@@ -15,6 +15,10 @@ describe('compare_comply_integration', () => {
         filename: 'TestTable.pdf',
       };
       compare_comply.convertToHtml(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.html).toBeTruthy();
         done();
@@ -29,6 +33,10 @@ describe('compare_comply_integration', () => {
         filename: 'TestTable.pdf',
       };
       compare_comply.classifyElements(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.document).toBeTruthy();
         expect(res.model_id).toBeTruthy();
@@ -42,7 +50,7 @@ describe('compare_comply_integration', () => {
         expect(res.contract_amounts).toBeTruthy();
         done();
       });
-    });
+    }, 10000);
   });
 
   describe('tables', () => {
@@ -52,6 +60,10 @@ describe('compare_comply_integration', () => {
         filename: 'TestTable.pdf',
       };
       compare_comply.extractTables(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.document).toBeTruthy();
         expect(res.model_id).toBeTruthy();
@@ -167,6 +179,10 @@ describe('compare_comply_integration', () => {
       };
 
       compare_comply.addFeedback(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         feedback_id = res.feedback_id;
 
         expect(err).toBeNull();
@@ -177,9 +193,14 @@ describe('compare_comply_integration', () => {
         expect(res.feedback_data).toBeDefined();
         done();
       });
-    });
+    }, 15000);
 
     test('getFeedback', done => {
+      if (!feedback_id) {
+        // We cannot run this test when addFeedback failed.
+        return done();
+      }
+
       const params = {
         feedback_id,
         headers: {
@@ -187,6 +208,10 @@ describe('compare_comply_integration', () => {
         },
       };
       compare_comply.getFeedback(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.feedback_id).toBeDefined();
         expect(res.user_id).toBeDefined();
@@ -195,22 +220,35 @@ describe('compare_comply_integration', () => {
         expect(res.feedback_data).toBeDefined();
         done();
       });
-    });
+    }, 10000);
 
     test('listFeedback', done => {
       compare_comply.listFeedback((err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.feedback).toBeDefined();
         expect(res.pagination).toBeDefined();
         done();
       });
-    });
+    }, 10000);
 
     test('deleteFeedback', done => {
+      if (!feedback_id) {
+        // We cannot run this test when addFeedback failed.
+        return done();
+      }
+
       const params = {
         feedback_id,
       };
       compare_comply.deleteFeedback(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.status).toBe(200);
         expect(res.message).toBeDefined();

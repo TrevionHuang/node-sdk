@@ -16,6 +16,10 @@ describe('assistant v2 integration', function() {
       assistant_id,
     };
     assistant.createSession(params, function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+
       expect(err).toBeNull();
       expect(res.session_id).toBeDefined();
       session_id = res.session_id;
@@ -24,11 +28,20 @@ describe('assistant v2 integration', function() {
   });
 
   it('should message - generic', function(done) {
+    if (!session_id) {
+      // We cannot run this test when session creation failed.
+      return done();
+    }
+
     const params = {
       assistant_id,
       session_id,
     };
+
     assistant.message(params, function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
       expect(err).toBeNull();
       expect(res.output).toBeDefined();
       expect(Array.isArray(res.output.generic)).toBe(true);
@@ -43,6 +56,11 @@ describe('assistant v2 integration', function() {
   });
 
   it('should message - non-generic (Promise)', function(done) {
+    if (!session_id) {
+      // We cannot run this test when session creation failed.
+      return done();
+    }
+
     const input = {
       text: 'please tell me a joke',
     };
@@ -64,16 +82,27 @@ describe('assistant v2 integration', function() {
         done();
       })
       .catch(err => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         throw new Error(err);
       });
   });
 
   it('should deleteSession', function(done) {
+    if (!session_id) {
+      // We cannot run this test when session creation failed.
+      return done();
+    }
+
     const params = {
       assistant_id: auth.assistant.assistant_id,
       session_id,
     };
     assistant.deleteSession(params, function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
       expect(err).toBeNull();
       done();
     });

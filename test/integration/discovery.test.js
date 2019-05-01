@@ -27,6 +27,10 @@ describe('discovery_integration', function() {
 
   it('should listEnvironments()', function(done) {
     discovery.listEnvironments(null, function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+
       expect(err).toBeNull();
       expect(Array.isArray(res.environments)).toBe(true);
       const environment_ids = res.environments.map(e => e.environment_id);
@@ -37,6 +41,10 @@ describe('discovery_integration', function() {
 
   it('should getEnvironment()', function(done) {
     discovery.getEnvironment({ environment_id: environment_id }, function(err, env) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+
       expect(err).toBeNull();
       expect(env).toBeDefined();
       expect(env.environment_id).toBe(environment_id);
@@ -46,6 +54,10 @@ describe('discovery_integration', function() {
 
   it('should listConfigurations()', function(done) {
     discovery.listConfigurations({ environment_id: environment_id }, function(err, res) {
+      if (err) {
+        expect(err.code).toBe(200);
+      }
+
       expect(err).toBeNull();
       expect(Array.isArray(res.configurations)).toBeDefined();
       expect(res.configurations[0]).toBeDefined();
@@ -60,6 +72,10 @@ describe('discovery_integration', function() {
         configuration_id: configuration_id,
       },
       function(err, conf) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(conf).toBeDefined();
         expect(conf.configuration_id).toBe(configuration_id);
@@ -97,6 +113,10 @@ describe('discovery_integration', function() {
         configuration_id: configuration_id,
       },
       function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res).toBeDefined();
         // console.log(res);
@@ -118,6 +138,10 @@ describe('discovery_integration', function() {
         natural_language_query: 'a question about stuff and things',
       },
       function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res).toBeDefined();
         expect(Array.isArray(res.results)).toBeDefined();
@@ -136,6 +160,10 @@ describe('discovery_integration', function() {
       };
 
       discovery.addDocument(document_obj, function(err, response) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(response.document_id).toBeDefined();
         done(err);
@@ -161,6 +189,10 @@ describe('discovery_integration', function() {
       };
 
       discovery.addDocument(document_obj, function(err, response) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(response.document_id).toBeDefined();
         done(err);
@@ -175,6 +207,10 @@ describe('discovery_integration', function() {
           query: '',
         },
         function(err, res) {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+
           expect(err).toBeNull();
           expect(res).toBeDefined();
           expect(typeof res.matching_results).toBe('number');
@@ -192,6 +228,10 @@ describe('discovery_integration', function() {
           query: '',
         },
         function(err, res) {
+          if (err) {
+            expect(err.code).toBe(200);
+          }
+
           expect(err).toBeNull();
           async.eachSeries(
             res.results,
@@ -205,6 +245,9 @@ describe('discovery_integration', function() {
                 },
                 function(err, res) {
                   // console.log('deleted', err, res);
+                  if (err) {
+                    expect(err.code).toBe(200);
+                  }
                   next(err);
                 }
               );
@@ -321,7 +364,9 @@ describe('discovery_integration', function() {
       };
 
       discovery.addDocument(addDocParams, function(error, response) {
-        if (error) done(error);
+        if (error) {
+          done(error.code);
+        }
         document_id = response.document_id;
 
         const queryParams = {
@@ -351,6 +396,10 @@ describe('discovery_integration', function() {
       };
 
       discovery.createEvent(createEventParams, function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
+
         expect(err).toBeNull();
         expect(res.type).toBe(type);
         expect(res.data.environment_id).toBe(environment_id);
@@ -378,6 +427,9 @@ describe('discovery_integration', function() {
   describe('metrics tests', function() {
     it('should get metrics event rate', function(done) {
       discovery.getMetricsEventRate(function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.aggregations).toBeDefined();
         expect(Array.isArray(res.aggregations)).toBe(true);
@@ -389,6 +441,9 @@ describe('discovery_integration', function() {
     });
     it('should get metrics query', function(done) {
       discovery.getMetricsQuery(function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.aggregations).toBeDefined();
         expect(Array.isArray(res.aggregations)).toBe(true);
@@ -400,6 +455,9 @@ describe('discovery_integration', function() {
     });
     it('should get metrics query event', function(done) {
       discovery.getMetricsQueryEvent(function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.aggregations).toBeDefined();
         done();
@@ -407,6 +465,9 @@ describe('discovery_integration', function() {
     });
     it('should get metrics query no results', function(done) {
       discovery.getMetricsQueryNoResults(function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.aggregations).toBeDefined();
         expect(Array.isArray(res.aggregations)).toBe(true);
@@ -420,6 +481,9 @@ describe('discovery_integration', function() {
       const count = 2;
       const params = { count };
       discovery.getMetricsQueryTokenEvent(params, function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.aggregations).toBeDefined();
         expect(Array.isArray(res.aggregations)).toBe(true);
@@ -429,7 +493,7 @@ describe('discovery_integration', function() {
         expect(res.aggregations[0].results[0].event_rate).toBeDefined();
         done();
       });
-    });
+    }, 40000);
   });
 
   describe('logs tests', function() {
@@ -443,6 +507,9 @@ describe('discovery_integration', function() {
         sort: ['created_timestamp'],
       };
       discovery.queryLog(params, function(err, res) {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.matching_results).toBeDefined();
         expect(res.results).toBeDefined();
@@ -548,6 +615,9 @@ describe('discovery_integration', function() {
         name: 'node-sdk-test',
       };
       discovery.createGateway(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.name).toBeDefined();
         expect(res.status).toBeDefined();
@@ -561,11 +631,19 @@ describe('discovery_integration', function() {
       });
     });
     it('should getGateway', function(done) {
+      if (!gateway_id) {
+        // We cannot run this test when gateway creation failed.
+        return done();
+      }
+
       const params = {
         environment_id,
         gateway_id,
       };
       discovery.getGateway(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.name).toBeDefined();
         expect(res.status).toBeDefined();
@@ -580,18 +658,28 @@ describe('discovery_integration', function() {
         environment_id,
       };
       discovery.listGateways(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.gateways).toBeDefined();
         expect(res.gateways.length).toBeTruthy();
         done();
       });
-    });
+    }, 60000);
     it('should deleteGateway', function(done) {
+      if (!gateway_id) {
+        // We cannot run this test when gateway creation failed.
+        return done();
+      }
       const params = {
         environment_id,
         gateway_id,
       };
       discovery.deleteGateway(params, (err, res) => {
+        if (err) {
+          expect(err.code).toBe(200);
+        }
         expect(err).toBeNull();
         expect(res.gateway_id).toBeDefined();
         expect(res.status).toBeDefined();
